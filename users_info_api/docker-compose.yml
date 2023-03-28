@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  db:
+    restart: always
+    image: postgres:14.4-alpine
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./schema/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+    name: backend
