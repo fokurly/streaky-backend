@@ -1,10 +1,8 @@
 package service
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/fokurly/streaky-backend/users_info_api/models"
 	"github.com/fokurly/streaky-backend/users_info_api/storage/postgre"
 	"github.com/gin-gonic/gin"
 )
@@ -37,25 +35,18 @@ func (u *usersInfoApi) GetUserTasks(ctx *gin.Context) {
 
 }
 
-func (u *usersInfoApi) AddNewUser(ctx *gin.Context) {
-	var user models.User
-
-	if err := ctx.BindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, fmt.Errorf("could not validate fields in body. error: %v", err))
-		return
-	}
-
-	err := u.db.InsertNewUser(user)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, fmt.Sprintf("New user %v has been created!", user.FullName))
-}
-
 func (u *usersInfoApi) AddNewTaskToUser(ctx *gin.Context) {
+	var task struct {
+		//ID        int64  `json:"id"`
+		UserID    int64  `json:"user_id"`
+		Name      string `json:"name"`
+		Punish    string `json:"punish"`
+		StartDate string `json:"start_date"`
+		EndDate   string `json:"end_date"`
+		State     string `json:"state"`
+	}
 
+	ctx.JSON(http.StatusOK, task)
 }
 
 func (u *usersInfoApi) AddNewTaskToWatch(ctx *gin.Context) {

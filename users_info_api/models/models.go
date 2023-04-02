@@ -1,6 +1,6 @@
 package models
 
-import "github.com/dgrijalva/jwt-go/v4"
+import "github.com/golang-jwt/jwt/v4"
 
 type User struct {
 	ID       int64  `json:"id"`
@@ -14,6 +14,7 @@ type Task struct {
 	ID        int64  `json:"id"`
 	UserID    int64  `json:"user_id"`
 	Name      string `json:"name"`
+	Panish    string `json:"panish"`
 	StartDate string `json:"start_date"`
 	EndDate   string `json:"end_date"`
 	State     string `json:"state"`
@@ -31,8 +32,8 @@ type DatabaseConfig struct {
 }
 
 type Claims struct {
-	jwt.StandardClaims
-	UserName string `json:"user_name"`
+	Username string `json:"username"`
+	jwt.RegisteredClaims
 }
 
 type UserAuth struct {
