@@ -235,15 +235,3 @@ func (d *Db) DeleteFromUnconfirmedFriendList(userID, deleteUserID int64) error {
 
 	return nil
 }
-
-func (d *Db) GetUserInfoByUserID() {
-
-}
-
-func (d *Db) GetTaskStateByTaskID() {
-
-}
-
-func (d *Db) GetAllUserTasksByID(id int64) {
-
-}

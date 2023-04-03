@@ -21,13 +21,18 @@ type UserAuth struct {
 }
 
 type Task struct {
-	ID        int64  `json:"id"`
-	UserID    int64  `json:"user_id"`
-	Name      string `json:"name"`
-	Panish    string `json:"panish"`
-	StartDate string `json:"start_date"`
-	EndDate   string `json:"end_date"`
-	State     string `json:"state"`
+	ID             int64  `json:"id"`
+	UserID         int64  `json:"user_id"`
+	FirstObserver  int64  `json:"first_observer"`
+	SecondObserver int64  `json:"second_observer"`
+	Name           string `json:"name"`
+	Punish         string `json:"punish"`
+	StartDate      string `json:"start_date"`
+	// TODO: пока храню просто в строке, мб переделать прям под дату
+	EndDate     string   `json:"end_date"`
+	State       string   `json:"state"`
+	Description string   `json:"description"`
+	Frequency   []string `json:"frequency"`
 }
 
 type FriendList struct {

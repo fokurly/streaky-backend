@@ -18,13 +18,42 @@ CREATE TABLE IF NOT EXISTS task_info (
     UserID bigint,
     FirstObserver bigint,
     SecondObserver bigint,
-    Deadline timestamp,
     Name varchar(100),
     Description text,
     Punish varchar(500),
     FrequencyPeriod varchar(50)[],
+    Status varchar(30),
+    StartDate varchar(50),
+    EndDate varchar(50),
     foreign key (UserID) references user_register_info (ID)
 );
+
+select * from task_info;
+SELECT COUNT(*) FROM task_info;
+
+drop table task_info;
+
+select * from task_info;
+
+insert into task_info(userid) values (1);
+insert into task_info(userid) values (3);
+insert into task_info(userid) values (5);
+insert into task_info(userid) values (2);
+
+insert into user_tasks(user_id) values (2);
+insert into user_tasks(user_id) values (3);
+insert into user_tasks(user_id) values (1);
+CREATE TABLE IF NOT EXISTS user_tasks (
+    user_id bigint,
+    task_ids bigint[],
+    observer_tasks_ids bigint[],
+    foreign key (user_id) references user_register_info (ID)
+);
+
+drop table user_tasks;
+
+
+select * from user_tasks;
 --
 -- insert into user_register_info (login, password) values ('first_log', 'first_pass');
 -- insert into user_register_info (login, password) values ('second', 'seco');

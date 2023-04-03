@@ -9,6 +9,10 @@ import (
 
 // TODO: подумать о том, как обрабатывать ошибки от бд
 // TODO: возможно добавлять в описание ключевую фразу [dbException] и по ней возвращать internal status error. В остальных случаях BadRequest
+
+// TODO: проверить валидацию ctx.Bind и возможно заменить её на что то другое
+// TODO: Удалять записи, которые добавили в бд, но не применились в других таблицах
+
 func main() {
 	storage := postgre.NewDatabase()
 
@@ -20,7 +24,7 @@ func main() {
 
 	usersApi := router.Group("/api", userApi.CheckAuth)
 	{
-		//	usersApi.POST("/get_users_tasks_by_id", userApi.GetUserTasksById)
+		// TODO: logout
 		usersApi.GET("/refresh_token", userApi.RefreshToken)
 		usersApi.POST("/check_user_for_exists_by_id", userApi.CheckUserForExistsByID)
 		usersApi.POST("/check_user_for_exists_by_login", userApi.CheckUserForExistsByLogin)
@@ -30,6 +34,16 @@ func main() {
 		usersApi.POST("/get_friend_list", userApi.GetFriendListByUserID)
 		usersApi.POST("/get_unconfirmed_friend_list", userApi.GetUnconfirmedFriendsIDs)
 		usersApi.POST("/cancel_new_friend", userApi.CancelNewFriendRequest)
+	}
+
+	taskApi := router.Group("/api", userApi.CheckAuth)
+	{
+		taskApi.POST("/create_new_task", userApi.CreateNewTask)
+		taskApi.POST("/get_tasks", userApi.GetUserTasks)
+		taskApi.POST("/get_observed_tasks", userApi.GetObservedTasks)
+
+		// TODO:
+		// taskApi.POST("/update_task_status", userApi.UpdateTaskStatus)
 	}
 
 	if err := router.Run(":8080"); err != nil {

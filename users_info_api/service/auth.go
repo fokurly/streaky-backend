@@ -83,6 +83,7 @@ func (u *usersInfoApi) SignIn(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
+// LogOut TODO: как это сделать? добавить кэш?
 func (u *usersInfoApi) LogOut(ctx *gin.Context) {
 
 }
