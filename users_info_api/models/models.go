@@ -10,6 +10,16 @@ type User struct {
 	Password string `json:"password"`
 }
 
+type UserInfo struct {
+	ID    int64  `json:"id"`
+	Login string `json:"login"`
+}
+
+type UserAuth struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
+}
+
 type Task struct {
 	ID        int64  `json:"id"`
 	UserID    int64  `json:"user_id"`
@@ -34,9 +44,4 @@ type DatabaseConfig struct {
 type Claims struct {
 	Username string `json:"username"`
 	jwt.RegisteredClaims
-}
-
-type UserAuth struct {
-	Username string `json:"username" bson:"_id"`
-	Password string `json:"password" bson:"password"`
 }

@@ -36,23 +36,25 @@ func (u *usersInfoApi) SignUp(ctx *gin.Context) {
 }
 
 func (u *usersInfoApi) SignIn(ctx *gin.Context) {
-	type data struct {
-		Login    string `json:"login"`
-		Password string `json:"password"`
-	}
-	var user data
+	var user models.UserAuth
 
 	if err := ctx.BindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, fmt.Errorf("could not validate fields in body. error: %v", err))
+		ctx.JSON(http.StatusBadRequest, fmt.Sprintf("could not validate fields in body. error: %v", err))
 		return
 	}
 	user.Password = utils.HashPassword(user.Password)
-	id, err := u.db.GetUser(user.Login, user.Password)
+	id, err := u.db.GetUserID(user)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Errorf("could not get user from db. error: %s", err))
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not get user from db. error: %s", err))
+		return
 	}
 
-	expirationTime := time.Now().Add(5 * time.Minute)
+	if id == nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not find user with such login and password. try again."))
+		return
+	}
+
+	expirationTime := time.Now().Add(60 * time.Minute)
 	claims := &models.Claims{
 		Username: user.Login,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -63,7 +65,7 @@ func (u *usersInfoApi) SignIn(ctx *gin.Context) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(_const.JwtKey))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Errorf("could not generate bearer token"))
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not generate bearer token"))
 		return
 	}
 
@@ -120,9 +122,9 @@ func (u *usersInfoApi) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	// Написать кэш для хранения валидных токенов, которые после логаута удаляются
+	// TODO: Написать кэш для хранения валидных токенов, которые после логаута удаляются
 
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(60 * time.Minute)
 	claims = &models.Claims{
 		Username: claims.Username,
 		RegisteredClaims: jwt.RegisteredClaims{

@@ -7,23 +7,29 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// TODO: подумать о том, как обрабатывать ошибки от бд
+// TODO: возможно добавлять в описание ключевую фразу [dbException] и по ней возвращать internal status error. В остальных случаях BadRequest
 func main() {
 	storage := postgre.NewDatabase()
 
-	//err := storage.InsertNewUser(models.User{Password: "fewf", Email: "ewfew", FullName: "fewf", Login: "fewfew"})
-	//if err != nil {
-	//	logrus.Panic(err)
-	//}
 	userApi := service.NewUsersInfoApi(storage)
 	router := gin.Default()
 
 	router.POST("/sign_up", userApi.SignUp)
 	router.POST("/sign_in", userApi.SignIn)
 
-	apis := router.Group("/api", userApi.CheckAuth)
+	usersApi := router.Group("/api", userApi.CheckAuth)
 	{
-		apis.POST("/get_all_users_task_by_id", userApi.GetAllUserTasksByID)
-		apis.GET("/refresh_token", userApi.RefreshToken)
+		//	usersApi.POST("/get_users_tasks_by_id", userApi.GetUserTasksById)
+		usersApi.GET("/refresh_token", userApi.RefreshToken)
+		usersApi.POST("/check_user_for_exists_by_id", userApi.CheckUserForExistsByID)
+		usersApi.POST("/check_user_for_exists_by_login", userApi.CheckUserForExistsByLogin)
+		usersApi.POST("/change_password", userApi.UpdateUserPassword)
+		usersApi.POST("/send_friend_request", userApi.AddNewFriendRequest)
+		usersApi.POST("/accept_friend_request", userApi.AcceptNewFriend)
+		usersApi.POST("/get_friend_list", userApi.GetFriendListByUserID)
+		usersApi.POST("/get_unconfirmed_friend_list", userApi.GetUnconfirmedFriendsIDs)
+		usersApi.POST("/cancel_new_friend", userApi.CancelNewFriendRequest)
 	}
 
 	if err := router.Run(":8080"); err != nil {
