@@ -9,9 +9,9 @@ import (
 
 // TODO: удаление пользователей из друзей
 
-func (d *Db) GetUserByID(ID int64) (*models.UserInfo, error) {
+func (d *Db) GetUserByID(ID int64) (*models.User, error) {
 	const (
-		getUser = `SELECT id, login FROM user_register_info WHERE id=$1`
+		getUser = `SELECT id, login, email, full_name FROM user_register_info WHERE id=$1`
 	)
 	rows, err := d.db.Query(getUser, ID)
 	if err != nil {
@@ -22,9 +22,9 @@ func (d *Db) GetUserByID(ID int64) (*models.UserInfo, error) {
 		_ = rows.Close()
 	}()
 
-	var user models.UserInfo
+	var user models.User
 	if rows.Next() {
-		err := rows.Scan(&user.ID, &user.Login)
+		err := rows.Scan(&user.ID, &user.Login, &user.Email, &user.FullName)
 		if err != nil {
 			return nil, fmt.Errorf("[GetUserByID] - could not scan rows. error: %v", err)
 		}
