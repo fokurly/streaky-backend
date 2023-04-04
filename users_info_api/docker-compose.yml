@@ -1,6 +1,16 @@
 version: '3.8'
 
 services:
+  user-info-api:
+    build: ./
+    command: ./wait-for-postgres.sh db ./app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      DB_PASSWORD: postgres
+
   db:
     restart: always
     image: postgres:14.4-alpine
@@ -13,10 +23,10 @@ services:
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
-    networks:
-      - backend
+#    networks:
+#      - backend
 
-networks:
-  backend:
-    driver: bridge
-    name: backend
+#networks:
+#  backend:
+#    driver: bridge
+#    name: backend
