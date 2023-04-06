@@ -43,7 +43,7 @@ func main() {
 		taskApi.POST("/get_observed_tasks", userApi.GetObservedTasks)
 
 		// TODO:
-		// taskApi.POST("/update_task_status", userApi.UpdateTaskStatus)
+		taskApi.POST("/update_task_status", userApi.UpdateTaskStatus)
 	}
 
 	if err := router.Run(":8080"); err != nil {

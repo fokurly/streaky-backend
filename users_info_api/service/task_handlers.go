@@ -72,3 +72,20 @@ func (u *usersInfoApi) GetObservedTasks(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, tasks)
 }
+
+func (u *usersInfoApi) UpdateTaskStatus(ctx *gin.Context) {
+	var params struct {
+		Status string `json:"status"`
+		TaskID int64  `json:"task_id"`
+	}
+
+	if err := ctx.BindJSON(&params); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate body. err: %v", err))
+		return
+	}
+
+	err := u.db.UpdateTaskStatus(params.Status, params.TaskID)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not update status. error: %v", err))
+	}
+}

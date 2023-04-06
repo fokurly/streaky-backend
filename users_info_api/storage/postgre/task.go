@@ -50,7 +50,7 @@ func (d *Db) InsertNewTask(task models.Task) error {
 
 func (d *Db) CountNumberOfColumns() (*int64, error) {
 	const (
-		countNumOfСolumns = `SELECT COUNT(*) FROM task_info;`
+		countNumOfСolumns = `SELECT COUNT(*) FROM task_info`
 	)
 
 	rows, err := d.db.Query(countNumOfСolumns)
@@ -184,4 +184,17 @@ func (d *Db) GetUserTasks(userID int64) ([]int64, error) {
 	}
 
 	return tasks, nil
+}
+
+func (d *Db) UpdateTaskStatus(status string, ID int64) error {
+	const (
+		updateStatus = `UPDATE task_info SET status=$1 WHERE id=$2`
+	)
+
+	_, err := d.db.Exec(updateStatus, status, ID)
+	if err != nil {
+		return fmt.Errorf("could not exec query. error: %v", err)
+	}
+
+	return nil
 }

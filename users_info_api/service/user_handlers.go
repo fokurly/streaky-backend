@@ -72,9 +72,14 @@ func (u *usersInfoApi) UpdateUserPassword(ctx *gin.Context) {
 	}
 
 	user.Auth.Password = utils.HashPassword(user.Auth.Password)
-	_, err := u.db.GetUserID(user.Auth)
+	id, err := u.db.GetUserID(user.Auth)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("could not get such user from db. error: %v", err))
+		return
+	}
+
+	if id == nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not change password. check correctness"))
 		return
 	}
 
