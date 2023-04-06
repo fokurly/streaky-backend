@@ -13,6 +13,8 @@ import (
 // TODO: проверить валидацию ctx.Bind и возможно заменить её на что то другое
 // TODO: Удалять записи, которые добавили в бд, но не применились в других таблицах
 // TODO: апи для получения всей инфы по пользователю
+// TODO: уведомления
+// TODO: получить рандомного человека
 func main() {
 	storage := postgre.NewDatabase()
 
@@ -44,6 +46,7 @@ func main() {
 
 		// TODO:
 		taskApi.POST("/update_task_status", userApi.UpdateTaskStatus)
+		taskApi.POST("/get_task_by_id", userApi.GetTaskInfoByID)
 	}
 
 	if err := router.Run(":8080"); err != nil {

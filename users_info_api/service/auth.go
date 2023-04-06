@@ -32,6 +32,8 @@ func (u *usersInfoApi) SignUp(ctx *gin.Context) {
 		return
 	}
 
+	// Добавить ошибку о том, что такой юзер уже есть
+
 	ctx.JSON(http.StatusOK, fmt.Sprintf("New user %v has been created!", user.FullName))
 }
 
@@ -69,14 +71,15 @@ func (u *usersInfoApi) SignIn(ctx *gin.Context) {
 		return
 	}
 
+	// заменить hello message на id
 	resp := &struct {
-		Token        string `json:"token"`
-		User         string `json:"user"`
-		HelloMessage string `json:"hello_message"`
+		Token string `json:"token"`
+		User  string `json:"user"`
+		ID    int64  `json:"id"`
 	}{
-		Token:        tokenString,
-		User:         user.Login,
-		HelloMessage: fmt.Sprintf("Hello user %v! Your id is %v", user.Login, *id),
+		Token: tokenString,
+		User:  user.Login,
+		ID:    *id,
 	}
 
 	ctx.Header(authorizationHeader, tokenString)

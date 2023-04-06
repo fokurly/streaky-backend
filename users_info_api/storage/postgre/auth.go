@@ -60,7 +60,7 @@ func (d *Db) GetUserID(user models.UserAuth) (*int64, error) {
 		_ = rows.Close()
 	}()
 
-	var ID *int64
+	var ID int64
 	if rows.Next() {
 		err := rows.Scan(&ID)
 		if err != nil {
@@ -68,5 +68,5 @@ func (d *Db) GetUserID(user models.UserAuth) (*int64, error) {
 		}
 	}
 
-	return ID, nil
+	return &ID, nil
 }

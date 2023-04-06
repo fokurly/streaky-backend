@@ -7,45 +7,45 @@ import (
 	"github.com/lib/pq"
 )
 
-func (d *Db) InsertNewTask(task models.Task) error {
+func (d *Db) InsertNewTask(task models.Task) (*int64, error) {
 	const (
 		insertNewUser = `INSERT INTO task_info(id, userid, firstobserver, secondobserver, name, description, punish, frequencyperiod, status, startdate, enddate) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`
 	)
 
-	var tmpFreq pq.StringArray
-	tmpFreq = task.Frequency
+	//var tmpFreq pq.StringArray
+	//tmpFreq = task.Frequency
 	id, err := d.CountNumberOfColumns()
 	if err != nil {
-		return fmt.Errorf("[InsertNewTask] - could not get columns in table. error: %v", err)
+		return nil, fmt.Errorf("[InsertNewTask] - could not get columns in table. error: %v", err)
 	}
 
-	task.ID = *id
+	task.ID = *id + 1
 	_, err = d.db.Exec(insertNewUser, task.ID, task.UserID, task.FirstObserver,
 		task.SecondObserver, task.Name, task.Description,
-		task.Punish, tmpFreq, task.State,
+		task.Punish, task.FrequenctPQ, task.State,
 		task.StartDate, task.EndDate)
 
 	if err != nil {
-		return fmt.Errorf("[InsertNewTask] - could not exec query. error: %v", err)
+		return nil, fmt.Errorf("[InsertNewTask] - could not exec query. error: %v", err)
 	}
 
 	{
 		err := d.InsertTaskToCreator(task.UserID, task.ID)
 		if err != nil {
-			return fmt.Errorf("[InsertNewTask] - could not add task to creator. error: %v", err)
+			return nil, fmt.Errorf("[InsertNewTask] - could not add task to creator. error: %v", err)
 		}
 		// TODO: Вынести?
 		err = d.InsertTaskToObserver(task.FirstObserver, task.ID)
 		if err != nil {
-			return fmt.Errorf("[InsertNewTask] - could not add observer. error: %v", err)
+			return nil, fmt.Errorf("[InsertNewTask] - could not add observer. error: %v", err)
 		}
 
 		err = d.InsertTaskToObserver(task.SecondObserver, task.ID)
 		if err != nil {
-			return fmt.Errorf("[InsertNewTask] - could not add observer. error: %v", err)
+			return nil, fmt.Errorf("[InsertNewTask] - could not add observer. error: %v", err)
 		}
 	}
-	return nil
+	return &task.ID, nil
 }
 
 func (d *Db) CountNumberOfColumns() (*int64, error) {
@@ -197,4 +197,26 @@ func (d *Db) UpdateTaskStatus(status string, ID int64) error {
 	}
 
 	return nil
+}
+
+// Метод для получения полной инфы по таскам
+func (d *Db) GetTaskInfo(ID int64) (*models.Task, error) {
+	const (
+		selectTask = `SELECT id, userid, firstobserver, secondobserver, name, description, punish, frequencyperiod, status, startdate, enddate FROM task_info WHERE id=$1`
+	)
+
+	rows, err := d.db.Query(selectTask, ID)
+	if err != nil {
+		return nil, fmt.Errorf("could not get task from database. error: %v", err)
+	}
+
+	var info models.Task
+	if rows.Next() {
+		err := rows.Scan(&info.ID, &info.UserID, &info.FirstObserver, &info.SecondObserver, &info.Name, &info.Description, &info.Punish, &info.FrequenctPQ, &info.State, &info.StartDate, &info.EndDate)
+		if err != nil {
+			return nil, fmt.Errorf("[GetUserTasks] - could not scan rows. error: %v", err)
+		}
+	}
+
+	return &info, err
 }

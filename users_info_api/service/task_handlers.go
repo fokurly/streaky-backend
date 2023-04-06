@@ -16,13 +16,18 @@ func (u *usersInfoApi) CreateNewTask(ctx *gin.Context) {
 		return
 	}
 
-	err := u.db.InsertNewTask(task)
+	id, err := u.db.InsertNewTask(task)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not create new task. error: %v", err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, fmt.Sprintf("task has been created!"))
+	resp := &struct {
+		ID int64 `json:"task_id"`
+	}{
+		ID: *id,
+	}
+	ctx.JSON(http.StatusOK, resp)
 }
 
 func (u *usersInfoApi) GetUserTasks(ctx *gin.Context) {
@@ -87,5 +92,27 @@ func (u *usersInfoApi) UpdateTaskStatus(ctx *gin.Context) {
 	err := u.db.UpdateTaskStatus(params.Status, params.TaskID)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not update status. error: %v", err))
+		return
 	}
+
+	ctx.Status(http.StatusOK)
+}
+
+func (u *usersInfoApi) GetTaskInfoByID(ctx *gin.Context) {
+	var params struct {
+		ID int64 `json:"task_id"`
+	}
+
+	if err := ctx.BindJSON(&params); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate body. err: %v", err))
+		return
+	}
+
+	taskInfo, err := u.db.GetTaskInfo(params.ID)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not get task. error: %v", err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, taskInfo)
 }

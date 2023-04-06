@@ -1,6 +1,9 @@
 package models
 
-import "github.com/golang-jwt/jwt/v4"
+import (
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/lib/pq"
+)
 
 type User struct {
 	ID       int64  `json:"id"`
@@ -29,10 +32,11 @@ type Task struct {
 	Punish         string `json:"punish"`
 	StartDate      string `json:"start_date"`
 	// TODO: пока храню просто в строке, мб переделать прям под дату
-	EndDate     string   `json:"end_date"`
-	State       string   `json:"state"`
-	Description string   `json:"description"`
-	Frequency   []string `json:"frequency"`
+	EndDate     string `json:"end_date"`
+	State       string `json:"state"`
+	Description string `json:"description"`
+	//Frequency   []string       `json:"frequency"`
+	FrequenctPQ pq.StringArray `json:"frequencyperiod"`
 }
 
 type FriendList struct {
