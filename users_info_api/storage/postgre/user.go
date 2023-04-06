@@ -2,6 +2,8 @@ package postgre
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 
 	"github.com/fokurly/streaky-backend/users_info_api/models"
 	"github.com/lib/pq"
@@ -234,4 +236,58 @@ func (d *Db) DeleteFromUnconfirmedFriendList(userID, deleteUserID int64) error {
 	}
 
 	return nil
+}
+func (d *Db) CountUsers() (*int64, error) {
+	const (
+		quantityOfUsers = `SELECT COUNT(*) FROM user_register_info`
+	)
+
+	rows, err := d.db.Query(quantityOfUsers)
+	if err != nil {
+		return nil, fmt.Errorf("[CountUsers] - could not exec query. error: %v", err)
+	}
+
+	defer func() {
+		_ = rows.Close()
+	}()
+
+	var count int64
+	if rows.Next() {
+		err := rows.Scan(&count)
+		if err != nil {
+			return nil, fmt.Errorf("[CountUsers] - could not scan rows. error: %v", err)
+		}
+	}
+
+	if count == 0 {
+		return nil, fmt.Errorf("could not find users")
+	}
+
+	return &count, nil
+}
+
+func (d *Db) GetRandomUser(userID int64) (*models.User, error) {
+	count, err := d.CountUsers()
+	if err != nil {
+		return nil, fmt.Errorf("could not prepare users. error: %v", err)
+	}
+
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	// 100 попыток попасть в юзера
+	for i := 0; i < 100; i++ {
+		id := r.Int63n(*count)
+		user, err := d.GetUserByID(id + 2)
+		if err != nil {
+			return nil, fmt.Errorf("could not get user. error: %v", err)
+		}
+		if user == nil {
+			continue
+		}
+		if user.ID != userID {
+			return user, nil
+		}
+	}
+
+	return nil, fmt.Errorf("something goes wrong. error: %v", err)
 }

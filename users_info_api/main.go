@@ -14,7 +14,7 @@ import (
 // TODO: Удалять записи, которые добавили в бд, но не применились в других таблицах
 // TODO: апи для получения всей инфы по пользователю
 // TODO: уведомления
-// TODO: получить рандомного человека
+// TODO: добавить required
 func main() {
 	storage := postgre.NewDatabase()
 
@@ -36,6 +36,7 @@ func main() {
 		usersApi.POST("/get_friend_list", userApi.GetFriendListByUserID)
 		usersApi.POST("/get_unconfirmed_friend_list", userApi.GetUnconfirmedFriendsIDs)
 		usersApi.POST("/cancel_new_friend", userApi.CancelNewFriendRequest)
+		usersApi.POST("/get_random_user", userApi.GetRandomUser)
 	}
 
 	taskApi := router.Group("/api", userApi.CheckAuth)

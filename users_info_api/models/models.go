@@ -26,7 +26,7 @@ type UserAuth struct {
 type Task struct {
 	ID             int64  `json:"id"`
 	UserID         int64  `json:"user_id"`
-	FirstObserver  int64  `json:"first_observer"`
+	FirstObserver  int64  `json:"first_observer" binding:"required"`
 	SecondObserver int64  `json:"second_observer"`
 	Name           string `json:"name"`
 	Punish         string `json:"punish"`

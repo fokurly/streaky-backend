@@ -203,6 +203,26 @@ func (u *usersInfoApi) CancelNewFriendRequest(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, fmt.Sprintf("You have cancelled friend request!"))
 }
 
+func (u *usersInfoApi) GetRandomUser(ctx *gin.Context) {
+	type params struct {
+		UserID int64 `json:"current_user_id"`
+	}
+
+	var data params
+	if err := ctx.BindJSON(&data); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate fields in body. error: %v", err))
+		return
+	}
+
+	user, err := u.db.GetRandomUser(data.UserID)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not get user. error: %v", err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}
+
 func (u *usersInfoApi) DeleteFriend(ctx *gin.Context) {
 
 }
