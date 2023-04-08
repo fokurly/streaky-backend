@@ -262,3 +262,42 @@ func (u *usersInfoApi) GetUserNotifications(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, noti)
 }
+
+func (u *usersInfoApi) GetUserInfo(ctx *gin.Context) {
+	type params struct {
+		UserID int64 `json:"user_id"`
+	}
+
+	var data params
+	if err := ctx.BindJSON(&data); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate fields in body. error: %v", err))
+		return
+	}
+
+	baseInfo, err := u.db.GetUserByID(data.UserID)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not get user. error: %v", err))
+		return
+	}
+
+	observed, err := u.db.GetObservedTasks(data.UserID)
+	task, err := u.db.GetUserTasks(data.UserID)
+
+	resp := &struct {
+		ID        int64  `json:"id"`
+		Login     string `json:"login"`
+		Email     string `json:"email"`
+		Tasks     int    `json:"tasks"`
+		Observers int    `json:"obververs"`
+		Observed  int    `json:"observed"`
+	}{
+		ID:        baseInfo.ID,
+		Login:     baseInfo.Login,
+		Email:     baseInfo.Email,
+		Tasks:     len(task),
+		Observers: len(task) * 2,
+		Observed:  len(observed),
+	}
+
+	ctx.JSON(http.StatusOK, resp)
+}

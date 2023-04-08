@@ -40,6 +40,8 @@ func main() {
 
 		usersApi.POST("/get_notify", userApi.GetUserNotifications)
 		usersApi.POST("/send_notify", userApi.SendNotification)
+
+		usersApi.POST("/get_user_info", userApi.GetUserInfo)
 	}
 
 	taskApi := router.Group("/api", userApi.CheckAuth)
