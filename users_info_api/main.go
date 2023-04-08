@@ -42,6 +42,10 @@ func main() {
 		usersApi.POST("/send_notify", userApi.SendNotification)
 
 		usersApi.POST("/get_user_info", userApi.GetUserInfo)
+
+		usersApi.POST("/update_observer_day", userApi.UpdateDayForObserver)
+		usersApi.POST("/update_user_day", userApi.UpdateDayForUser)
+		usersApi.POST("/get_days", userApi.GetDays)
 	}
 
 	taskApi := router.Group("/api", userApi.CheckAuth)

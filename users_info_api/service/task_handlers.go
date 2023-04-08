@@ -116,3 +116,23 @@ func (u *usersInfoApi) GetTaskInfoByID(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, taskInfo)
 }
+
+func (u *usersInfoApi) GetDays(ctx *gin.Context) {
+	type params struct {
+		TaskID int64 `json:"task_id"`
+	}
+
+	var data params
+	if err := ctx.BindJSON(&data); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate body. err: %v", err))
+		return
+	}
+
+	days, err := u.db.GetDays(data.TaskID)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not get days. error: %v", err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, days)
+}

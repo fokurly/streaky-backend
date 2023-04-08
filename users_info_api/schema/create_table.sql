@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS user_friend_list
 
 CREATE TABLE IF NOT EXISTS user_notification
 (
-    UserID                  bigint,
-    NotificationFrom             bigint,
-    Message text,
+    UserID           bigint,
+    NotificationFrom bigint,
+    Message          text,
     foreign key (UserID) references user_register_info (ID),
     foreign key (NotificationFrom) references user_register_info (ID)
 );
@@ -44,7 +44,20 @@ CREATE TABLE IF NOT EXISTS task_info
     EndDate         varchar(50),
     foreign key (UserID) references user_register_info (ID)
 );
+---select * from task_info;
 
+CREATE TABLE IF NOT EXISTS days
+(
+    taskID         bigint,
+    secondObserverID bigint,
+    firstObserverID bigint,
+    day            varchar(50) unique,
+    status varchar(50),
+    foreign key (taskID) references task_info (ID)
+);
+
+-- drop table days;
+-- SELECT * from days;
 -- select * from task_info;
 -- SELECT COUNT(*) FROM task_info;
 --
@@ -60,6 +73,7 @@ CREATE TABLE IF NOT EXISTS task_info
 -- insert into user_tasks(user_id) values (2);
 -- insert into user_tasks(user_id) values (3);
 -- insert into user_tasks(user_id) values (1);
+
 CREATE TABLE IF NOT EXISTS user_tasks
 (
     user_id            bigint,

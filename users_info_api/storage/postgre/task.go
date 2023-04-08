@@ -220,3 +220,99 @@ func (d *Db) GetTaskInfo(ID int64) (*models.Task, error) {
 
 	return &info, err
 }
+
+func (d *Db) UpdateDayForUser(taskID int64, day string, status string) error {
+	const (
+		updateTask = `UPDATE days SET status=$1 WHERE taskid=$2 and day=$3`
+		insertDay  = `INSERT INTO days(taskid, day, status) VALUES($1, $2, $3)`
+		selectDay  = `SELECT taskid FROM days WHERE taskid=$1`
+	)
+
+	rows, err := d.db.Query(selectDay, taskID)
+	if err != nil {
+		return fmt.Errorf("could not exec query. error: %v", err)
+	}
+
+	var id *int64
+	if rows.Next() {
+		err := rows.Scan(&id)
+		if err != nil {
+			return fmt.Errorf("[GetUserTasks] - could not scan rows. error: %v", err)
+		}
+	}
+
+	if id == nil {
+		_, err = d.db.Exec(insertDay, taskID, day, status)
+		if err != nil {
+			return fmt.Errorf("[InsertNewTask] - could not exec query. error: %v", err)
+		}
+		return nil
+	}
+
+	_, err = d.db.Exec(updateTask, status, taskID, day)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *Db) UpdateTaskForObserver(taskID int64, day string, observerID int64) error {
+	const (
+		selectObserver           = `select firstobserverid, secondobserverid from days`
+		updateFirstObserverTask  = `UPDATE days SET firstobserverid=$1 WHERE taskid=$2 and day=$3`
+		updateSecondObserverTask = `UPDATE days SET secondobserverid=$1 WHERE taskid=$2 and day=$3`
+	)
+
+	rows, err := d.db.Query(selectObserver)
+
+	var first, second *int64
+	if rows.Next() {
+		err := rows.Scan(&first, &second)
+		if err != nil {
+			return fmt.Errorf("[UpdateTaskForObserver] - could not scan rows. error: %v", err)
+		}
+	}
+
+	if first == nil {
+		_, err = d.db.Exec(updateFirstObserverTask, observerID, taskID, day)
+		if err != nil {
+			return err
+		}
+		return nil
+	} else if second == nil {
+		_, err = d.db.Exec(updateSecondObserverTask, observerID, taskID, day)
+		if err != nil {
+			return err
+		}
+		return nil
+	} else {
+		return fmt.Errorf("nothing to update")
+	}
+}
+
+func (d *Db) GetDays(taskID int64) (interface{}, error) {
+	const (
+		selectObserver = `select status, day from days where taskid=$1`
+	)
+
+	rows, err := d.db.Query(selectObserver, taskID)
+	if err != nil {
+		return nil, fmt.Errorf("could not exec query. error: %v", err)
+	}
+	type db struct {
+		Day    string `json:"day"`
+		Status string `json:"status"`
+	}
+	var res []db
+	for rows.Next() {
+		var tmp db
+		err := rows.Scan(&tmp.Day, &tmp.Status)
+		if err != nil {
+			return nil, fmt.Errorf("[GetDays] - could not scan rows. error: %v", err)
+		}
+		res = append(res, tmp)
+	}
+
+	return res, nil
+}

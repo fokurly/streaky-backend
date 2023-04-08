@@ -301,3 +301,53 @@ func (u *usersInfoApi) GetUserInfo(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, resp)
 }
+
+func (u *usersInfoApi) UpdateDayForUser(ctx *gin.Context) {
+	type params struct {
+		TaskID int64  `json:"task_id"`
+		Day    string `json:"day"`
+		Status string `json:"status"`
+	}
+
+	var data params
+	if err := ctx.BindJSON(&data); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate fields in body. error: %v", err))
+		return
+	}
+
+	err := u.db.UpdateDayForUser(data.TaskID, data.Day, data.Status)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate fields in body. error: %v", err))
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+}
+
+func (u *usersInfoApi) UpdateDayForObserver(ctx *gin.Context) {
+	type params struct {
+		ObserverID int64  `json:"observer_id"`
+		TaskID     int64  `json:"task_id"`
+		Day        string `json:"day"`
+	}
+	var data params
+	if err := ctx.BindJSON(&data); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate fields in body. error: %v", err))
+		return
+	}
+
+	err := u.db.UpdateTaskForObserver(data.TaskID, data.Day, data.ObserverID)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate fields in body. error: %v", err))
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+}
+
+func (u *usersInfoApi) GetDayByTask(ctx *gin.Context) {
+	type params struct {
+		TaskID int64 `json:"task_id"`
+	}
+
+}
