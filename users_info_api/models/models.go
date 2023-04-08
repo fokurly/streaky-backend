@@ -54,3 +54,9 @@ type Claims struct {
 	Username string `json:"username"`
 	jwt.RegisteredClaims
 }
+
+type Notification struct {
+	FromUserID int64  `json:"from_user_id"`
+	ToUserID   int64  `json:"to_user_id"`
+	Message    string `json:"message"`
+}

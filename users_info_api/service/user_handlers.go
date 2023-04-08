@@ -223,6 +223,42 @@ func (u *usersInfoApi) GetRandomUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
-func (u *usersInfoApi) DeleteFriend(ctx *gin.Context) {
+func (u *usersInfoApi) SendNotification(ctx *gin.Context) {
+	type params struct {
+		FromUserID int64  `json:"from_id"`
+		ToUserID   int64  `json:"to_user_id"`
+		Message    string `json:"message"`
+	}
 
+	var data models.Notification
+	if err := ctx.BindJSON(&data); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate fields in body. error: %v", err))
+		return
+	}
+	err := u.db.SendNotification(data)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not send notify"))
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+}
+
+func (u *usersInfoApi) GetUserNotifications(ctx *gin.Context) {
+	type params struct {
+		UserID int64 `json:"user_id"`
+	}
+	var data params
+	if err := ctx.BindJSON(&data); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate fields in body. error: %v", err))
+		return
+	}
+
+	noti, err := u.db.GetNotification(data.UserID)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not get notify"))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, noti)
 }

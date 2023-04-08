@@ -37,6 +37,9 @@ func main() {
 		usersApi.POST("/get_unconfirmed_friend_list", userApi.GetUnconfirmedFriendsIDs)
 		usersApi.POST("/cancel_new_friend", userApi.CancelNewFriendRequest)
 		usersApi.POST("/get_random_user", userApi.GetRandomUser)
+
+		usersApi.POST("/get_notify", userApi.GetUserNotifications)
+		usersApi.POST("/send_notify", userApi.SendNotification)
 	}
 
 	taskApi := router.Group("/api", userApi.CheckAuth)

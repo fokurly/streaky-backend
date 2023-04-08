@@ -291,3 +291,54 @@ func (d *Db) GetRandomUser(userID int64) (*models.User, error) {
 
 	return nil, fmt.Errorf("something goes wrong. error: %v", err)
 }
+
+func (d *Db) SendNotification(notification models.Notification) error {
+	const (
+		insertNotification = `INSERT INTO user_notification(userid, notificationfrom, message) VALUES($1, $2, $3)`
+	)
+
+	_, err := d.db.Exec(insertNotification, notification.ToUserID, notification.FromUserID, notification.Message)
+	if err != nil {
+		return fmt.Errorf("[InsertNewUser] - could not exec query. error: %v", err)
+	}
+
+	return nil
+}
+
+func (d *Db) GetNotification(userID int64) ([]models.Notification, error) {
+	const (
+		insertNotification = `SELECT userid, notificationfrom, message FROM user_notification where userid=$1`
+	)
+
+	rows, err := d.db.Query(insertNotification, userID)
+	if err != nil {
+		return nil, fmt.Errorf("[GetNotification] - could not exec query. error: %v", err)
+	}
+
+	var res []models.Notification
+	for rows.Next() {
+		var noti models.Notification
+
+		err = rows.Scan(&noti.ToUserID, &noti.FromUserID, &noti.Message)
+		if err != nil {
+			return nil, fmt.Errorf("[GetAllClients] - could not scan row. error: %v", err)
+		}
+		res = append(res, noti)
+	}
+
+	_ = d.DeleteNotify(userID)
+	return res, nil
+}
+
+func (d *Db) DeleteNotify(userID int64) error {
+	const (
+		deleteFrom = `DELETE FROM user_notification where userid=$1`
+	)
+
+	_, err := d.db.Exec(deleteFrom, userID)
+	if err != nil {
+		return fmt.Errorf("[DeleteNotify] - could not exec query. error: %v", err)
+	}
+
+	return nil
+}
