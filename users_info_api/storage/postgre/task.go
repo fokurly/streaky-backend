@@ -291,23 +291,53 @@ func (d *Db) UpdateTaskForObserver(taskID int64, day string, observerID int64) e
 	}
 }
 
-func (d *Db) GetDays(taskID int64) (interface{}, error) {
+func (d *Db) GetCurrentDay(taskID int64, day string) (interface{}, error) {
 	const (
-		selectObserver = `select status, day from days where taskid=$1`
+		selectCurrentDay = `select status, day, firstobserverid, secondobserverid from days where taskid=$1 && day=$2`
 	)
 
-	rows, err := d.db.Query(selectObserver, taskID)
+	rows, err := d.db.Query(selectCurrentDay, taskID, day)
 	if err != nil {
 		return nil, fmt.Errorf("could not exec query. error: %v", err)
 	}
 	type db struct {
-		Day    string `json:"day"`
-		Status string `json:"status"`
+		Day            string `json:"day"`
+		Status         string `json:"status"`
+		FirstObserver  int64  `json:"firstobserverid"`
+		SecondObserver int64  `json:"secondobserverid"`
 	}
 	var res []db
 	for rows.Next() {
 		var tmp db
-		err := rows.Scan(&tmp.Day, &tmp.Status)
+		err := rows.Scan(&tmp.Day, &tmp.Status, &tmp.FirstObserver, &tmp.SecondObserver)
+		if err != nil {
+			return nil, fmt.Errorf("[GetDays] - could not scan rows. error: %v", err)
+		}
+		res = append(res, tmp)
+	}
+
+	return res, nil
+}
+
+func (d *Db) GetDays(taskID int64) (interface{}, error) {
+	const (
+		selectDays = `select status, day, firstobserverid, secondobserverid from days where taskid=$1`
+	)
+
+	rows, err := d.db.Query(selectDays, taskID)
+	if err != nil {
+		return nil, fmt.Errorf("could not exec query. error: %v", err)
+	}
+	type db struct {
+		Day            string `json:"day"`
+		Status         string `json:"status"`
+		FirstObserver  int64  `json:"firstobserverid"`
+		SecondObserver int64  `json:"secondobserverid"`
+	}
+	var res []db
+	for rows.Next() {
+		var tmp db
+		err := rows.Scan(&tmp.Day, &tmp.Status, &tmp.FirstObserver, &tmp.SecondObserver)
 		if err != nil {
 			return nil, fmt.Errorf("[GetDays] - could not scan rows. error: %v", err)
 		}

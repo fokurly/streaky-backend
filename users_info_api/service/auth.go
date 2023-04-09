@@ -17,6 +17,10 @@ const (
 	authorizationHeader = "Authorization"
 )
 
+func (u *usersInfoApi) Ping(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, fmt.Sprintf("ping"))
+}
+
 func (u *usersInfoApi) SignUp(ctx *gin.Context) {
 	var user models.User
 

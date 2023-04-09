@@ -136,3 +136,24 @@ func (u *usersInfoApi) GetDays(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, days)
 }
+
+func (u *usersInfoApi) GetCurrentDay(ctx *gin.Context) {
+	type params struct {
+		TaskID int64  `json:"task_id"`
+		Day    string `json:"day"`
+	}
+
+	var data params
+	if err := ctx.BindJSON(&data); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprintf("could not validate body. err: %v", err))
+		return
+	}
+
+	days, err := u.db.GetCurrentDay(data.TaskID, data.Day)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, fmt.Sprintf("could not get day. error: %v", err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, days)
+}

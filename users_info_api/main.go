@@ -24,6 +24,7 @@ func main() {
 	router.POST("/sign_up", userApi.SignUp)
 	router.POST("/sign_in", userApi.SignIn)
 
+	router.GET("/ping", userApi.Ping)
 	usersApi := router.Group("/api", userApi.CheckAuth)
 	{
 		// TODO: logout
@@ -46,6 +47,7 @@ func main() {
 		usersApi.POST("/update_observer_day", userApi.UpdateDayForObserver)
 		usersApi.POST("/update_user_day", userApi.UpdateDayForUser)
 		usersApi.POST("/get_days", userApi.GetDays)
+		usersApi.POST("/get_current_day", userApi.GetCurrentDay)
 	}
 
 	taskApi := router.Group("/api", userApi.CheckAuth)
