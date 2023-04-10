@@ -4,10 +4,10 @@ import (
 	"github.com/fokurly/streaky-backend/users_info_api/storage/postgre"
 )
 
-type usersInfoApi struct {
+type serviceStreakyApi struct {
 	db *postgre.Db
 }
 
-func NewUsersInfoApi(db *postgre.Db) *usersInfoApi {
-	return &usersInfoApi{db: db}
+func NewStreakyApi(db *postgre.Db) *serviceStreakyApi {
+	return &serviceStreakyApi{db: db}
 }

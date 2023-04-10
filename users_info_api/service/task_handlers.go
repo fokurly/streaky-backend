@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (u *usersInfoApi) CreateNewTask(ctx *gin.Context) {
+func (u *serviceStreakyApi) CreateNewTask(ctx *gin.Context) {
 	var task models.Task
 
 	if err := ctx.BindJSON(&task); err != nil {
@@ -30,7 +30,7 @@ func (u *usersInfoApi) CreateNewTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func (u *usersInfoApi) GetUserTasks(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetUserTasks(ctx *gin.Context) {
 	var user struct {
 		ID int64 `json:"user_id"`
 	}
@@ -54,7 +54,7 @@ func (u *usersInfoApi) GetUserTasks(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, tasks)
 }
 
-func (u *usersInfoApi) GetObservedTasks(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetObservedTasks(ctx *gin.Context) {
 	var user struct {
 		ID int64 `json:"user_id"`
 	}
@@ -78,7 +78,7 @@ func (u *usersInfoApi) GetObservedTasks(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, tasks)
 }
 
-func (u *usersInfoApi) UpdateTaskStatus(ctx *gin.Context) {
+func (u *serviceStreakyApi) UpdateTaskStatus(ctx *gin.Context) {
 	var params struct {
 		Status string `json:"status"`
 		TaskID int64  `json:"task_id"`
@@ -98,7 +98,7 @@ func (u *usersInfoApi) UpdateTaskStatus(ctx *gin.Context) {
 	ctx.Status(http.StatusOK)
 }
 
-func (u *usersInfoApi) GetTaskInfoByID(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetTaskInfoByID(ctx *gin.Context) {
 	var params struct {
 		ID int64 `json:"task_id"`
 	}
@@ -117,7 +117,7 @@ func (u *usersInfoApi) GetTaskInfoByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, taskInfo)
 }
 
-func (u *usersInfoApi) GetDays(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetDays(ctx *gin.Context) {
 	type params struct {
 		TaskID int64 `json:"task_id"`
 	}
@@ -137,7 +137,7 @@ func (u *usersInfoApi) GetDays(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, days)
 }
 
-func (u *usersInfoApi) GetCurrentDay(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetCurrentDay(ctx *gin.Context) {
 	type params struct {
 		TaskID int64  `json:"task_id"`
 		Day    string `json:"day"`

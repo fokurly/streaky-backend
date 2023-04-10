@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (u *usersInfoApi) CheckUserForExistsByID(ctx *gin.Context) {
+func (u *serviceStreakyApi) CheckUserForExistsByID(ctx *gin.Context) {
 	type data struct {
 		Id int64 `json:"id"`
 	}
@@ -33,7 +33,7 @@ func (u *usersInfoApi) CheckUserForExistsByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, userInfo)
 }
 
-func (u *usersInfoApi) CheckUserForExistsByLogin(ctx *gin.Context) {
+func (u *serviceStreakyApi) CheckUserForExistsByLogin(ctx *gin.Context) {
 	type data struct {
 		Login string `json:"login"`
 	}
@@ -59,7 +59,7 @@ func (u *usersInfoApi) CheckUserForExistsByLogin(ctx *gin.Context) {
 }
 
 // Добавить в случае если забыл пароль метод обновления??
-func (u *usersInfoApi) UpdateUserPassword(ctx *gin.Context) {
+func (u *serviceStreakyApi) UpdateUserPassword(ctx *gin.Context) {
 	type data struct {
 		Auth        models.UserAuth `json:"user_auth"`
 		NewPassword string          `json:"new_password"`
@@ -94,7 +94,7 @@ func (u *usersInfoApi) UpdateUserPassword(ctx *gin.Context) {
 }
 
 // Принимает id
-func (u *usersInfoApi) AddNewFriendRequest(ctx *gin.Context) {
+func (u *serviceStreakyApi) AddNewFriendRequest(ctx *gin.Context) {
 	type params struct {
 		UserID      int64 `json:"user_id"`
 		NewFriendID int64 `json:"new_friend_id"`
@@ -114,7 +114,7 @@ func (u *usersInfoApi) AddNewFriendRequest(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, fmt.Sprintf("You send request to new friend!"))
 }
 
-func (u *usersInfoApi) AcceptNewFriend(ctx *gin.Context) {
+func (u *serviceStreakyApi) AcceptNewFriend(ctx *gin.Context) {
 	type params struct {
 		UserID      int64 `json:"user_id"`
 		NewFriendID int64 `json:"new_friend_id"`
@@ -134,7 +134,7 @@ func (u *usersInfoApi) AcceptNewFriend(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, fmt.Sprintf("You accepted friend request!"))
 }
 
-func (u *usersInfoApi) GetFriendListByUserID(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetFriendListByUserID(ctx *gin.Context) {
 	type params struct {
 		UserID int64 `json:"user_id"`
 	}
@@ -159,7 +159,7 @@ func (u *usersInfoApi) GetFriendListByUserID(ctx *gin.Context) {
 }
 
 // Метод в который будут тыкать и он будет отдавать запросы в друзьям конкретному id пользователя
-func (u *usersInfoApi) GetUnconfirmedFriendsIDs(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetUnconfirmedFriendsIDs(ctx *gin.Context) {
 	type params struct {
 		UserID int64 `json:"user_id"`
 	}
@@ -183,7 +183,7 @@ func (u *usersInfoApi) GetUnconfirmedFriendsIDs(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, unconfirmedFriendList)
 }
 
-func (u *usersInfoApi) CancelNewFriendRequest(ctx *gin.Context) {
+func (u *serviceStreakyApi) CancelNewFriendRequest(ctx *gin.Context) {
 	type params struct {
 		UserID         int64 `json:"user_id"`
 		CancelFriendID int64 `json:"cancel_friend_id"`
@@ -203,7 +203,7 @@ func (u *usersInfoApi) CancelNewFriendRequest(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, fmt.Sprintf("You have cancelled friend request!"))
 }
 
-func (u *usersInfoApi) GetRandomUser(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetRandomUser(ctx *gin.Context) {
 	type params struct {
 		UserID int64 `json:"current_user_id"`
 	}
@@ -223,7 +223,7 @@ func (u *usersInfoApi) GetRandomUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
-func (u *usersInfoApi) SendNotification(ctx *gin.Context) {
+func (u *serviceStreakyApi) SendNotification(ctx *gin.Context) {
 	type params struct {
 		FromUserID int64  `json:"from_id"`
 		ToUserID   int64  `json:"to_user_id"`
@@ -244,7 +244,7 @@ func (u *usersInfoApi) SendNotification(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (u *usersInfoApi) GetUserNotifications(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetUserNotifications(ctx *gin.Context) {
 	type params struct {
 		UserID int64 `json:"user_id"`
 	}
@@ -263,7 +263,7 @@ func (u *usersInfoApi) GetUserNotifications(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, noti)
 }
 
-func (u *usersInfoApi) GetUserInfo(ctx *gin.Context) {
+func (u *serviceStreakyApi) GetUserInfo(ctx *gin.Context) {
 	type params struct {
 		UserID int64 `json:"user_id"`
 	}
@@ -302,7 +302,7 @@ func (u *usersInfoApi) GetUserInfo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func (u *usersInfoApi) UpdateDayForUser(ctx *gin.Context) {
+func (u *serviceStreakyApi) UpdateDayForUser(ctx *gin.Context) {
 	type params struct {
 		TaskID int64  `json:"task_id"`
 		Day    string `json:"day"`
@@ -324,7 +324,7 @@ func (u *usersInfoApi) UpdateDayForUser(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (u *usersInfoApi) UpdateDayForObserver(ctx *gin.Context) {
+func (u *serviceStreakyApi) UpdateDayForObserver(ctx *gin.Context) {
 	type params struct {
 		ObserverID int64  `json:"observer_id"`
 		TaskID     int64  `json:"task_id"`
@@ -343,11 +343,4 @@ func (u *usersInfoApi) UpdateDayForObserver(ctx *gin.Context) {
 	}
 
 	ctx.Status(http.StatusNoContent)
-}
-
-func (u *usersInfoApi) GetDayByTask(ctx *gin.Context) {
-	type params struct {
-		TaskID int64 `json:"task_id"`
-	}
-
 }

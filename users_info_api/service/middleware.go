@@ -10,7 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func (u *usersInfoApi) CheckAuth(ctx *gin.Context) {
+func (u *serviceStreakyApi) CheckAuth(ctx *gin.Context) {
 	header := ctx.GetHeader(authorizationHeader)
 	if header == "" {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, "empty auth header")

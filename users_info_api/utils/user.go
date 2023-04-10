@@ -5,10 +5,6 @@ import (
 	"fmt"
 )
 
-func GeneratePassword() {
-
-}
-
 func HashPassword(pass string) string {
 	h := md5.New()
 	h.Write([]byte(pass))

@@ -24,19 +24,17 @@ type UserAuth struct {
 }
 
 type Task struct {
-	ID             int64  `json:"id"`
-	UserID         int64  `json:"user_id"`
-	FirstObserver  int64  `json:"first_observer" binding:"required"`
-	SecondObserver int64  `json:"second_observer"`
-	Name           string `json:"name"`
-	Punish         string `json:"punish"`
-	StartDate      string `json:"start_date"`
-	// TODO: пока храню просто в строке, мб переделать прям под дату
-	EndDate     string `json:"end_date"`
-	State       string `json:"state"`
-	Description string `json:"description"`
-	//Frequency   []string       `json:"frequency"`
-	FrequenctPQ pq.StringArray `json:"frequencyperiod"`
+	ID             int64          `json:"id"`
+	UserID         int64          `json:"user_id"`
+	FirstObserver  int64          `json:"first_observer" binding:"required"`
+	SecondObserver int64          `json:"second_observer"`
+	Name           string         `json:"name"`
+	Punish         string         `json:"punish"`
+	StartDate      string         `json:"start_date"`
+	EndDate        string         `json:"end_date"`
+	State          string         `json:"state"`
+	Description    string         `json:"description"`
+	FrequenctPQ    pq.StringArray `json:"frequencyperiod"`
 }
 
 type FriendList struct {

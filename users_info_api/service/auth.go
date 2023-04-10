@@ -17,11 +17,11 @@ const (
 	authorizationHeader = "Authorization"
 )
 
-func (u *usersInfoApi) Ping(ctx *gin.Context) {
+func (u *serviceStreakyApi) Ping(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, fmt.Sprintf("ping"))
 }
 
-func (u *usersInfoApi) SignUp(ctx *gin.Context) {
+func (u *serviceStreakyApi) SignUp(ctx *gin.Context) {
 	var user models.User
 
 	if err := ctx.BindJSON(&user); err != nil {
@@ -41,7 +41,7 @@ func (u *usersInfoApi) SignUp(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, fmt.Sprintf("New user %v has been created!", user.FullName))
 }
 
-func (u *usersInfoApi) SignIn(ctx *gin.Context) {
+func (u *serviceStreakyApi) SignIn(ctx *gin.Context) {
 	var user models.UserAuth
 
 	if err := ctx.BindJSON(&user); err != nil {
@@ -90,12 +90,7 @@ func (u *usersInfoApi) SignIn(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-// LogOut TODO: как это сделать? добавить кэш?
-func (u *usersInfoApi) LogOut(ctx *gin.Context) {
-
-}
-
-func (u *usersInfoApi) RefreshToken(ctx *gin.Context) {
+func (u *serviceStreakyApi) RefreshToken(ctx *gin.Context) {
 	header := ctx.GetHeader(authorizationHeader)
 	if header == "" {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, "empty auth header")

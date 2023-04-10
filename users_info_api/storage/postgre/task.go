@@ -14,7 +14,7 @@ func (d *Db) InsertNewTask(task models.Task) (*int64, error) {
 
 	//var tmpFreq pq.StringArray
 	//tmpFreq = task.Frequency
-	id, err := d.CountNumberOfColumns()
+	id, err := d.countNumberOfColumns()
 	if err != nil {
 		return nil, fmt.Errorf("[InsertNewTask] - could not get columns in table. error: %v", err)
 	}
@@ -48,14 +48,14 @@ func (d *Db) InsertNewTask(task models.Task) (*int64, error) {
 	return &task.ID, nil
 }
 
-func (d *Db) CountNumberOfColumns() (*int64, error) {
+func (d *Db) countNumberOfColumns() (*int64, error) {
 	const (
 		countNumOfСolumns = `SELECT COUNT(*) FROM task_info`
 	)
 
 	rows, err := d.db.Query(countNumOfСolumns)
 	if err != nil {
-		return nil, fmt.Errorf("[CountNumberOfColumns] - could not exec query. error: %v", err)
+		return nil, fmt.Errorf("[countNumberOfColumns] - could not exec query. error: %v", err)
 	}
 
 	defer func() {
@@ -66,7 +66,7 @@ func (d *Db) CountNumberOfColumns() (*int64, error) {
 	if rows.Next() {
 		err := rows.Scan(&tmp)
 		if err != nil {
-			return nil, fmt.Errorf("[CountNumberOfColumns] - could not scan rows. error: %v", err)
+			return nil, fmt.Errorf("[countNumberOfColumns] - could not scan rows. error: %v", err)
 		}
 	}
 
