@@ -259,12 +259,12 @@ func (d *Db) UpdateDayForUser(taskID int64, day string, status string) error {
 
 func (d *Db) UpdateTaskForObserver(taskID int64, day string, observerID int64) error {
 	const (
-		selectObserver           = `select firstobserverid, secondobserverid from days`
+		selectObserver           = `select firstobserverid, secondobserverid from days where taskid=$1`
 		updateFirstObserverTask  = `UPDATE days SET firstobserverid=$1 WHERE taskid=$2 and day=$3`
 		updateSecondObserverTask = `UPDATE days SET secondobserverid=$1 WHERE taskid=$2 and day=$3`
 	)
 
-	rows, err := d.db.Query(selectObserver)
+	rows, err := d.db.Query(selectObserver, taskID)
 
 	var first, second *int64
 	if rows.Next() {
@@ -293,7 +293,7 @@ func (d *Db) UpdateTaskForObserver(taskID int64, day string, observerID int64) e
 
 func (d *Db) GetCurrentDay(taskID int64, day string) (interface{}, error) {
 	const (
-		selectCurrentDay = `select status, day, firstobserverid, secondobserverid from days where taskid=$1 && day=$2`
+		selectCurrentDay = `select status, day, firstobserverid, secondobserverid from days where taskid=$1 and day=$2`
 	)
 
 	rows, err := d.db.Query(selectCurrentDay, taskID, day)
@@ -309,7 +309,7 @@ func (d *Db) GetCurrentDay(taskID int64, day string) (interface{}, error) {
 	var res []db
 	for rows.Next() {
 		var tmp db
-		err := rows.Scan(&tmp.Day, &tmp.Status, &tmp.FirstObserver, &tmp.SecondObserver)
+		err := rows.Scan(&tmp.Status, &tmp.Day, &tmp.FirstObserver, &tmp.SecondObserver)
 		if err != nil {
 			return nil, fmt.Errorf("[GetDays] - could not scan rows. error: %v", err)
 		}
@@ -337,7 +337,7 @@ func (d *Db) GetDays(taskID int64) (interface{}, error) {
 	var res []db
 	for rows.Next() {
 		var tmp db
-		err := rows.Scan(&tmp.Day, &tmp.Status, &tmp.FirstObserver, &tmp.SecondObserver)
+		err := rows.Scan(&tmp.Status, &tmp.Day, &tmp.FirstObserver, &tmp.SecondObserver)
 		if err != nil {
 			return nil, fmt.Errorf("[GetDays] - could not scan rows. error: %v", err)
 		}
