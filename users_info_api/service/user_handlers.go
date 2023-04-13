@@ -11,7 +11,7 @@ import (
 
 func (u *serviceStreakyApi) CheckUserForExistsByID(ctx *gin.Context) {
 	type data struct {
-		Id int64 `json:"id"`
+		Id int64 `json:"id" validate:"required"`
 	}
 	var user data
 	if err := ctx.BindJSON(&user); err != nil {
@@ -35,7 +35,7 @@ func (u *serviceStreakyApi) CheckUserForExistsByID(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) CheckUserForExistsByLogin(ctx *gin.Context) {
 	type data struct {
-		Login string `json:"login"`
+		Login string `json:"login" validate:"required"`
 	}
 
 	var user data
@@ -61,8 +61,8 @@ func (u *serviceStreakyApi) CheckUserForExistsByLogin(ctx *gin.Context) {
 // Добавить в случае если забыл пароль метод обновления??
 func (u *serviceStreakyApi) UpdateUserPassword(ctx *gin.Context) {
 	type data struct {
-		Auth        models.UserAuth `json:"user_auth"`
-		NewPassword string          `json:"new_password"`
+		Auth        models.UserAuth `json:"user_auth" validate:"required"`
+		NewPassword string          `json:"new_password" validate:"required"`
 	}
 
 	var user data
@@ -96,8 +96,8 @@ func (u *serviceStreakyApi) UpdateUserPassword(ctx *gin.Context) {
 // Принимает id
 func (u *serviceStreakyApi) AddNewFriendRequest(ctx *gin.Context) {
 	type params struct {
-		UserID      int64 `json:"user_id"`
-		NewFriendID int64 `json:"new_friend_id"`
+		UserID      int64 `json:"user_id" validate:"required"`
+		NewFriendID int64 `json:"new_friend_id" validate:"required"`
 	}
 	var data params
 	if err := ctx.BindJSON(&data); err != nil {
@@ -116,8 +116,8 @@ func (u *serviceStreakyApi) AddNewFriendRequest(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) AcceptNewFriend(ctx *gin.Context) {
 	type params struct {
-		UserID      int64 `json:"user_id"`
-		NewFriendID int64 `json:"new_friend_id"`
+		UserID      int64 `json:"user_id" validate:"required"`
+		NewFriendID int64 `json:"new_friend_id" validate:"required"`
 	}
 	var data params
 	if err := ctx.BindJSON(&data); err != nil {
@@ -136,7 +136,7 @@ func (u *serviceStreakyApi) AcceptNewFriend(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) GetFriendListByUserID(ctx *gin.Context) {
 	type params struct {
-		UserID int64 `json:"user_id"`
+		UserID int64 `json:"user_id" validate:"required"`
 	}
 	var data params
 	if err := ctx.BindJSON(&data); err != nil {
@@ -158,10 +158,9 @@ func (u *serviceStreakyApi) GetFriendListByUserID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, friendList)
 }
 
-// Метод в который будут тыкать и он будет отдавать запросы в друзьям конкретному id пользователя
 func (u *serviceStreakyApi) GetUnconfirmedFriendsIDs(ctx *gin.Context) {
 	type params struct {
-		UserID int64 `json:"user_id"`
+		UserID int64 `json:"user_id" validate:"required"`
 	}
 	var data params
 	if err := ctx.BindJSON(&data); err != nil {
@@ -185,8 +184,8 @@ func (u *serviceStreakyApi) GetUnconfirmedFriendsIDs(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) CancelNewFriendRequest(ctx *gin.Context) {
 	type params struct {
-		UserID         int64 `json:"user_id"`
-		CancelFriendID int64 `json:"cancel_friend_id"`
+		UserID         int64 `json:"user_id" validate:"required"`
+		CancelFriendID int64 `json:"cancel_friend_id" validate:"required"`
 	}
 	var data params
 	if err := ctx.BindJSON(&data); err != nil {
@@ -205,7 +204,7 @@ func (u *serviceStreakyApi) CancelNewFriendRequest(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) GetRandomUser(ctx *gin.Context) {
 	type params struct {
-		UserID int64 `json:"current_user_id"`
+		UserID int64 `json:"current_user_id" validate:"required"`
 	}
 
 	var data params
@@ -225,9 +224,9 @@ func (u *serviceStreakyApi) GetRandomUser(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) SendNotification(ctx *gin.Context) {
 	type params struct {
-		FromUserID int64  `json:"from_id"`
-		ToUserID   int64  `json:"to_user_id"`
-		Message    string `json:"message"`
+		FromUserID int64  `json:"from_id" validate:"required"`
+		ToUserID   int64  `json:"to_user_id" validate:"required"`
+		Message    string `json:"message" validate:"required"`
 	}
 
 	var data models.Notification
@@ -246,7 +245,7 @@ func (u *serviceStreakyApi) SendNotification(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) GetUserNotifications(ctx *gin.Context) {
 	type params struct {
-		UserID int64 `json:"user_id"`
+		UserID int64 `json:"user_id" validate:"required"`
 	}
 	var data params
 	if err := ctx.BindJSON(&data); err != nil {
@@ -265,7 +264,7 @@ func (u *serviceStreakyApi) GetUserNotifications(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) GetUserInfo(ctx *gin.Context) {
 	type params struct {
-		UserID int64 `json:"user_id"`
+		UserID int64 `json:"user_id" validate:"required"`
 	}
 
 	var data params
@@ -304,9 +303,9 @@ func (u *serviceStreakyApi) GetUserInfo(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) UpdateDayForUser(ctx *gin.Context) {
 	type params struct {
-		TaskID int64  `json:"task_id"`
-		Day    string `json:"day"`
-		Status string `json:"status"`
+		TaskID int64  `json:"task_id" validate:"required"`
+		Day    string `json:"day" validate:"required"`
+		Status string `json:"status" validate:"required"`
 	}
 
 	var data params
@@ -326,9 +325,9 @@ func (u *serviceStreakyApi) UpdateDayForUser(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) UpdateDayForObserver(ctx *gin.Context) {
 	type params struct {
-		ObserverID int64  `json:"observer_id"`
-		TaskID     int64  `json:"task_id"`
-		Day        string `json:"day"`
+		ObserverID int64  `json:"observer_id" validate:"required"`
+		TaskID     int64  `json:"task_id" validate:"required"`
+		Day        string `json:"day" validate:"required"`
 	}
 	var data params
 	if err := ctx.BindJSON(&data); err != nil {

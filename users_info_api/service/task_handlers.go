@@ -32,7 +32,7 @@ func (u *serviceStreakyApi) CreateNewTask(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) GetUserTasks(ctx *gin.Context) {
 	var user struct {
-		ID int64 `json:"user_id"`
+		ID int64 `json:"user_id" validate:"required"`
 	}
 
 	if err := ctx.BindJSON(&user); err != nil {
@@ -56,7 +56,7 @@ func (u *serviceStreakyApi) GetUserTasks(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) GetObservedTasks(ctx *gin.Context) {
 	var user struct {
-		ID int64 `json:"user_id"`
+		ID int64 `json:"user_id" validate:"required"`
 	}
 
 	if err := ctx.BindJSON(&user); err != nil {
@@ -80,8 +80,8 @@ func (u *serviceStreakyApi) GetObservedTasks(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) UpdateTaskStatus(ctx *gin.Context) {
 	var params struct {
-		Status string `json:"status"`
-		TaskID int64  `json:"task_id"`
+		Status string `json:"status" validate:"required"`
+		TaskID int64  `json:"task_id" validate:"required"`
 	}
 
 	if err := ctx.BindJSON(&params); err != nil {
@@ -100,7 +100,7 @@ func (u *serviceStreakyApi) UpdateTaskStatus(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) GetTaskInfoByID(ctx *gin.Context) {
 	var params struct {
-		ID int64 `json:"task_id"`
+		ID int64 `json:"task_id" validate:"required"`
 	}
 
 	if err := ctx.BindJSON(&params); err != nil {
@@ -119,7 +119,7 @@ func (u *serviceStreakyApi) GetTaskInfoByID(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) GetDays(ctx *gin.Context) {
 	type params struct {
-		TaskID int64 `json:"task_id"`
+		TaskID int64 `json:"task_id" validate:"required"`
 	}
 
 	var data params
@@ -139,8 +139,8 @@ func (u *serviceStreakyApi) GetDays(ctx *gin.Context) {
 
 func (u *serviceStreakyApi) GetCurrentDay(ctx *gin.Context) {
 	type params struct {
-		TaskID int64  `json:"task_id"`
-		Day    string `json:"day"`
+		TaskID int64  `json:"task_id" validate:"required"`
+		Day    string `json:"day" validate:"required"`
 	}
 
 	var data params
