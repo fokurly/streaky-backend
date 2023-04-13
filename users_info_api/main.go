@@ -19,7 +19,6 @@ func main() {
 	router.GET("/ping", serviceApi.Ping)
 	usersApi := router.Group("/api", serviceApi.CheckAuth)
 	{
-		// TODO: logout
 		usersApi.GET("/refresh_token", serviceApi.RefreshToken)
 		usersApi.POST("/check_user_for_exists_by_id", serviceApi.CheckUserForExistsByID)
 		usersApi.POST("/check_user_for_exists_by_login", serviceApi.CheckUserForExistsByLogin)
@@ -48,7 +47,6 @@ func main() {
 		taskApi.POST("/get_tasks", serviceApi.GetUserTasks)
 		taskApi.POST("/get_observed_tasks", serviceApi.GetObservedTasks)
 
-		// TODO:
 		taskApi.POST("/update_task_status", serviceApi.UpdateTaskStatus)
 		taskApi.POST("/get_task_by_id", serviceApi.GetTaskInfoByID)
 	}
