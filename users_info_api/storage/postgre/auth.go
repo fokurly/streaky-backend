@@ -17,7 +17,6 @@ func (d *Db) InsertNewUser(user models.User) error {
 		return fmt.Errorf("[InsertNewUser] - could not exec query. error: %v", err)
 	}
 
-	// TODO: переделать костыль создания таблиц??
 	{
 		userAuth := models.UserAuth{
 			Login:    user.Login,
