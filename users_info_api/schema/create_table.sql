@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS days
     taskID         bigint,
     secondObserverID bigint,
     firstObserverID bigint,
-    day            varchar(50) unique,
+    day            varchar(50),
     status varchar(50),
     foreign key (taskID) references task_info (ID)
 );
